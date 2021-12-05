@@ -1,33 +1,18 @@
-{ lib, stdenv
-, fetchFromGitHub
-, nix-update-script
-, fetchpatch
-, vala_0_52
-, meson
-, ninja
-, pkg-config
-, python3
-, libgee
-, gsettings-desktop-schemas
-, gnome
-, pantheon
-, wrapGAppsHook
-, gtk3
-, json-glib
-, glib
-, glib-networking
-, libhandy
+{ lib, stdenv, fetchFromGitHub, nix-update-script, wrapGAppsHook
+, meson, ninja, pkg-config, vala_0_52, python3
+, glib, glib-networking, json-glib, libgee, gnome, gtk4, libadwaita, libsecret
+
 }:
 
 stdenv.mkDerivation rec {
   pname = "tootle";
-  version = "1.0";
+  version = "unstable-2021-09-09";
 
   src = fetchFromGitHub {
     owner = "bleakgrey";
     repo = pname;
-    rev = version;
-    sha256 = "NRM7GiJA8c5z9AvXpGXtMl4ZaYN2GauEIbjBmoY4pdo=";
+    rev = "02f918d6377f78481de1b9d9485bfb4fa183aaaa";
+    sha256 = "sha256-BYi0/oRhO3oytR0q4LAoTlWYtMqstaNSltJs+zJVuBM=";
   };
 
   nativeBuildInputs = [
@@ -44,13 +29,12 @@ stdenv.mkDerivation rec {
   buildInputs = [
     glib
     glib-networking
-    gnome.libsoup
-    gsettings-desktop-schemas
-    gtk3
     json-glib
     libgee
-    pantheon.granite
-    libhandy
+    gnome.libsoup
+    gtk4
+    libadwaita
+    libsecret
   ];
 
   postPatch = ''
@@ -65,8 +49,8 @@ stdenv.mkDerivation rec {
   };
 
   meta = with lib; {
-    description = "Simple Mastodon client designed for elementary OS";
-    homepage = "https://github.com/bleakgrey/tootle";
+    description = "GTK-based Mastodon client";
+    homepage = "https://apps.gnome.org/app/com.github.bleakgrey.tootle";
     license = licenses.gpl3;
     maintainers = with maintainers; [ dtzWill ];
   };
