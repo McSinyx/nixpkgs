@@ -22185,6 +22185,8 @@ with pkgs;
 
   exim = callPackage ../servers/mail/exim { };
 
+  farside = callPackage ../servers/web-apps/farside { };
+
   fcgiwrap = callPackage ../servers/fcgiwrap { };
 
   fedigroups = callPackage ../servers/fedigroups {
