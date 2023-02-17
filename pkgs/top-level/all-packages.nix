@@ -24586,6 +24586,8 @@ with pkgs;
     nodejs = nodejs-14_x;
   };
 
+  lieu = callPackage ../servers/web-apps/lieu { };
+
   lighttpd = callPackage ../servers/http/lighttpd { };
 
   listmonk = callPackage ../servers/mail/listmonk { };
