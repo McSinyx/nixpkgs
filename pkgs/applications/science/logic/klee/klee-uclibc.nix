@@ -7,36 +7,34 @@
 , clang
 , llvm
 , python3
-, curl
 , debugRuntime ? true
 , runtimeAsserts ? false
 , extraKleeuClibcConfig ? {}
 }:
 
 let
+  homepage = "https://github.com/klee/klee-uclibc";
   localeSrcBase = "uClibc-locale-030818.tgz";
   localeSrc = fetchurl {
     url = "http://www.uclibc.org/downloads/${localeSrcBase}";
     sha256 = "xDYr4xijjxjZjcz0YtItlbq5LwVUi7k/ZSmP6a+uvVc=";
   };
   resolvedExtraKleeuClibcConfig = lib.mapAttrsToList (name: value: "${name}=${value}") (extraKleeuClibcConfig // {
-    "UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA" = "n";
     "RUNTIME_PREFIX" = "/";
     "DEVEL_PREFIX" = "/";
   });
-in stdenv.mkDerivation rec {
+in stdenv.mkDerivation (finalAttr: {
   pname = "klee-uclibc";
-  version = "1.3";
+  version = "1.4";
   src = fetchFromGitHub {
     owner = "klee";
     repo = "klee-uclibc";
-    rev = "klee_uclibc_v${version}";
-    sha256 = "sha256-xQ8GWa0Gmd3lbwKodJhrsZeuR4j7NT4zIUh+kNhVY/w=";
+    rev = "klee_uclibc_v${finalAttr.version}";
+    hash = "sha256-sogQK5Ed0k5tf4rrYwCKT4YRKyEovgT25p0BhGvJ1ok=";
   };
 
   nativeBuildInputs = [
     clang
-    curl
     llvm
     python3
     which
@@ -86,7 +84,10 @@ in stdenv.mkDerivation rec {
     ln -sf ${localeSrc} extra/locale/${localeSrcBase}
   '';
 
-  makeFlags = ["HAVE_DOT_CONFIG=y"];
+  makeFlags = [
+    "HAVE_DOT_CONFIG=y"
+    "UCLIBC_DOWNLOAD_PREGENERATED_LOCALE_DATA=n"
+  ];
 
   meta = with lib; {
     description = "A modified version of uClibc for KLEE.";
@@ -94,8 +95,9 @@ in stdenv.mkDerivation rec {
       klee-uclibc is a bitcode build of uClibc meant for compatibility with the
       KLEE symbolic virtual machine.
     '';
-    homepage = "https://klee.github.io/";
-    license = licenses.lgpl3;
+    homepage = homepage;
+    changelog = "${homepage}/releases/tag/klee_uclibc_v${finalAttr.version}";
+    license = licenses.lgpl21;
     maintainers = with maintainers; [ numinit ];
   };
-}
+})
