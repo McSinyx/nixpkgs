@@ -1,0 +1,15 @@
+diff --git a/Makefile.in b/Makefile.in
+index 55bcda3e2f92..6b979563308b 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -85,6 +85,10 @@ CILLY_EXE_BIN = $(patsubst $(OBJDIR)/src/main.%,bin/$(CILLY).%,$(CILLY_EXE_FILES
+ # Force a single invocation of ocamlbuild per make execution
+ 
+ override OCAMLBUILD += -build-dir $(OBJDIR) -use-ocamlfind -no-links
++# See https://github.com/samee/obliv-c/issues/76#issuecomment-438958209
++override OCAMLBUILD += -package num \
++	-ocamlopt "ocamlopt -dontlink num" \
++	-ocamlc "ocamlc -dontlink num"
+ 
+ OCAMLBUILD_TARGETS = \
+ 	$(CILLIB_TARGETS)  \
