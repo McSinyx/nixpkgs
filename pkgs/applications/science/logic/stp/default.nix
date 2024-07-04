@@ -1,33 +1,19 @@
-{ lib, stdenv, cmake, boost, bison, flex, fetchFromGitHub, perl
-, python3, python3Packages, zlib, minisat, cryptominisat }:
+{ lib, stdenv, cmake, boost, bison, flex, fetchFromGitHub, perl, pkg-config
+, python3, python3Packages, zlib, minisat, cryptominisat, gmp }:
 
 stdenv.mkDerivation rec {
   pname = "stp";
-  version = "2.3.3";
+  version = "2.3.4";
 
   src = fetchFromGitHub {
     owner = "stp";
     repo = "stp";
-    rev    = version;
-    sha256 = "1yg2v4wmswh1sigk47drwsxyayr472mf4i47lqmlcgn9hhbx1q87";
+    rev = version;
+    sha256 = "sha256-PtONKgqahT9x+5WHi3zyoXwDTdq/VapzBl3Aod7Cbgc=";
   };
-  patches = [
-    # Fix missing type declaration
-    # due to undeterminisitic compilation
-    # of circularly dependent headers
-    ./stdint.patch
-  ];
 
-  postPatch = ''
-    # Upstream fix for gcc-13 support:
-    #   https://github.com/stp/stp/pull/462
-    # Can't apply it as is as patch context changed in ither patches.
-    # TODO: remove me on 2.4 release
-    sed -e '1i #include <cstdint>' -i include/stp/AST/ASTNode.h
-  '';
-
-  buildInputs = [ boost zlib minisat cryptominisat python3 ];
-  nativeBuildInputs = [ cmake bison flex perl ];
+  buildInputs = [ boost zlib minisat cryptominisat gmp python3 ];
+  nativeBuildInputs = [ cmake bison flex perl pkg-config ];
   preConfigure = ''
     python_install_dir=$out/${python3Packages.python.sitePackages}
     mkdir -p $python_install_dir
